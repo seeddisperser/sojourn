@@ -67,7 +67,7 @@ export default function NotaryPage() {
     }
   }, [specId])
 
-  useWebSocket(useCallback((msg) => {
+  useWebSocket(useCallback((msg: { type: string; payload: unknown }) => {
     if (msg.type === 'artifact_updated') {
       const p = msg.payload as any
       if (p.type === 'spec' && p.artifact.id === specId) {

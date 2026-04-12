@@ -12,19 +12,20 @@ interface ImageCardProps {
   image: Image
   selected?: boolean
   onSelect?: (id: string, e: React.MouseEvent) => void
+  onOpen?: (id: string) => void
   style?: React.CSSProperties
   onDragStart?: (e: React.MouseEvent, id: string) => void
 }
 
-export default function ImageCard({ image, selected, onSelect, style, onDragStart }: ImageCardProps) {
+export default function ImageCard({ image, selected, onSelect, onOpen, style, onDragStart }: ImageCardProps) {
   return (
     <div
       className={`absolute card overflow-hidden w-44 cursor-pointer select-none group hover:shadow-md transition-shadow ${
         selected ? 'ring-2 ring-soil-400 shadow-md' : ''
       }`}
       style={style}
-      onClick={e => onSelect?.(image.id, e)}
-      onMouseDown={e => { if (e.button === 0) onDragStart?.(e, image.id) }}
+      onClick={e => { if (e.shiftKey) onSelect?.(image.id, e); else onOpen?.(image.id) }}
+      onMouseDown={e => { if (e.button === 0) { e.stopPropagation(); onDragStart?.(e, image.id) } }}
     >
       <div className="bg-soil-100 h-32 flex items-center justify-center overflow-hidden">
         <img

@@ -65,7 +65,7 @@ export default function Inbox() {
     return () => obs.disconnect()
   }, [clearUnread])
 
-  useWebSocket(useCallback((msg) => {
+  useWebSocket(useCallback((msg: { type: string; payload: unknown }) => {
     if (msg.type === 'event') {
       const ev = msg.payload as Event
       setEvents(prev => [ev, ...prev.slice(0, 99)])

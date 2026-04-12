@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import { api } from '../../api'
-
 interface Note {
   id: string
   title: string
@@ -14,15 +11,14 @@ interface NoteCardProps {
   note: Note
   selected?: boolean
   onSelect?: (id: string, e: React.MouseEvent) => void
+  onOpen?: (id: string) => void
   onPrune?: (id: string) => void
   style?: React.CSSProperties
   onDragStart?: (e: React.MouseEvent, id: string) => void
 }
 
-export default function NoteCard({ note, selected, onSelect, onPrune, style, onDragStart }: NoteCardProps) {
-  const [commentCount] = useState(0)
-
-  const excerpt = note.content.slice(0, 120).replace(/#+\s/g, '').trim()
+export default function NoteCard({ note, selected, onSelect, onOpen, onPrune, style, onDragStart }: NoteCardProps) {
+  const excerpt = (note.content ?? '').slice(0, 120).replace(/#+\s/g, '').trim()
 
   return (
     <div
@@ -30,8 +26,8 @@ export default function NoteCard({ note, selected, onSelect, onPrune, style, onD
         selected ? 'ring-2 ring-soil-400 shadow-md' : ''
       }`}
       style={style}
-      onClick={e => onSelect?.(note.id, e)}
-      onMouseDown={e => { if (e.button === 0) onDragStart?.(e, note.id) }}
+      onClick={e => { if (e.shiftKey) onSelect?.(note.id, e); else onOpen?.(note.id) }}
+      onMouseDown={e => { if (e.button === 0) { e.stopPropagation(); onDragStart?.(e, note.id) } }}
     >
       <div className="flex items-start justify-between gap-1 mb-1">
         <span className="font-medium text-sm text-soil-800 leading-snug line-clamp-2">{note.title || 'Untitled'}</span>
@@ -46,9 +42,6 @@ export default function NoteCard({ note, selected, onSelect, onPrune, style, onD
       {excerpt && <p className="text-xs text-soil-400 line-clamp-3 leading-relaxed">{excerpt}</p>}
       <div className="flex items-center justify-between mt-2">
         <span className="text-xs text-soil-300">{note.created_by}</span>
-        {commentCount > 0 && (
-          <span className="text-xs text-soil-400">💬 {commentCount}</span>
-        )}
       </div>
     </div>
   )

@@ -13,22 +13,19 @@ interface Summary {
 
 export default function MissionControl() {
   const navigate = useNavigate()
-  const { activeBuildsCount, unreadCount, setInboxFilter } = useStore()
+  const { unreadCount, setInboxFilter } = useStore()
   const [summary, setSummary] = useState<Summary>({
     activeBuilds: 0, openHingePoints: 0, pendingComments: 0, recentBuildStatus: null, totalCost: 0,
   })
 
   useEffect(() => {
-    api.builds.list().then((builds: any[]) => {
+    api.builds.list().then(data => {
+      const builds = data as Array<{ status: string; cost_metrics: string | null }>
       const active = builds.filter(b => b.status === 'running').length
-      const hinge = builds.reduce((n: number, b: any) => {
-        // count open hinge points from recent builds
-        return n
-      }, 0)
       const recent = builds[0]?.status ?? null
-      const totalCost = builds.reduce((sum: number, b: any) => {
+      const totalCost = builds.reduce((sum: number, b) => {
         const cm = b.cost_metrics ? JSON.parse(b.cost_metrics) : null
-        return sum + (cm?.total_cost ?? 0)
+        return sum + ((cm as { total_cost?: number } | null)?.total_cost ?? 0)
       }, 0)
       setSummary(s => ({ ...s, activeBuilds: active, recentBuildStatus: recent, totalCost }))
     }).catch(() => {})

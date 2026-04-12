@@ -1,5 +1,3 @@
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useStore } from '../store'
 import Inbox from './Inbox'
 import ControlBar from './ControlBar'
 

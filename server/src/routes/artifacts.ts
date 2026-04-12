@@ -12,13 +12,19 @@ artifactsRouter.get('/artifacts', (req: AuthRequest, res) => {
   const offset = parseInt(req.query.offset as string) || 0
 
   const notes = db.prepare(`
-    SELECT id, title, 'note' as type, created_at, updated_at, created_by, pruned
-    FROM notes WHERE pruned = 0 LIMIT ? OFFSET ?
+    SELECT n.id, n.title, n.content, n.created_by, n.updated_by, n.updated_at,
+           cp.canvas_x, cp.canvas_y
+    FROM notes n
+    LEFT JOIN card_positions cp ON cp.artifact_id = n.id AND cp.artifact_type = 'note'
+    WHERE n.pruned = 0 LIMIT ? OFFSET ?
   `).all(limit, offset)
 
   const images = db.prepare(`
-    SELECT id, 'image' as type, created_at, created_by
-    FROM images LIMIT ? OFFSET ?
+    SELECT i.id, i.file_path, i.thumbnail_path, i.caption, i.created_by,
+           cp.canvas_x, cp.canvas_y
+    FROM images i
+    LEFT JOIN card_positions cp ON cp.artifact_id = i.id AND cp.artifact_type = 'image'
+    LIMIT ? OFFSET ?
   `).all(limit, offset)
 
   const clusters = db.prepare(`

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../api'
-import { useStore } from '../../store'
 
 interface Comment {
   id: string
@@ -20,8 +19,6 @@ export default function CommentPanel({ artifactId, artifactType, onClose }: Comm
   const [comments, setComments] = useState<Comment[]>([])
   const [body, setBody] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
-  const userName = useStore(s => s.userName)
-
   useEffect(() => {
     api.comments.list(artifactId, artifactType)
       .then(data => setComments(data as Comment[]))

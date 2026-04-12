@@ -43,8 +43,6 @@ const STATUS_COLORS: Record<string, string> = {
 export default function WorkshopPage() {
   const { buildId } = useParams()
   const navigate = useNavigate()
-  const userName = useStore(s => s.userName)
-
   const [builds, setBuilds] = useState<BuildSession[]>([])
   const [activeBuild, setActiveBuild] = useState<BuildSession | null>(null)
   const [logs, setLogs] = useState<LogLine[]>([])
@@ -73,7 +71,7 @@ export default function WorkshopPage() {
     }).catch(() => {})
   }, [buildId, builds])
 
-  useWebSocket(useCallback((msg) => {
+  useWebSocket(useCallback((msg: { type: string; payload: unknown }) => {
     if (msg.type === 'build_log_line') {
       const p = msg.payload as any
       if (p.build_id === (buildId ?? activeBuild?.id)) {
