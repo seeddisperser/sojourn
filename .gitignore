@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.db
+sojourn.config.json
+.DS_Store
+client/dist/
+server/dist/

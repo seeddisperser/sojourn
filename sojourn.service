@@ -1,0 +1,18 @@
+[Unit]
+Description=Sojourn - Local mission command environment
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/sojourn
+ExecStart=/home/pi/sojourn/start.sh
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sojourn
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
