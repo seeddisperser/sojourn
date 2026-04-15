@@ -61,6 +61,10 @@ export const api = {
   },
   comments: {
     list: (artifactId: string, artifactType: string) => get(`/api/comments?artifact_id=${artifactId}&artifact_type=${artifactType}`),
+    threads: () => get<Array<{
+      artifact_id: string; artifact_type: string; artifact_title: string;
+      comment_count: number; last_comment_at: string; latest_body: string; latest_author: string
+    }>>('/api/comments/threads'),
     create: (artifactId: string, artifactType: string, body: string, parentId?: string) =>
       post('/api/comments', { artifact_id: artifactId, artifact_type: artifactType, body, parent_id: parentId }),
   },

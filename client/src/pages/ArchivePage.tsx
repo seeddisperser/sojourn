@@ -164,7 +164,7 @@ export default function ArchivePage() {
   }
 
   async function handleCreateCluster() {
-    if (!clusterName.trim() || selected.size === 0) return
+    if (!clusterName.trim()) return
     const memberIds = Array.from(selected).map(id => ({
       id,
       type: (notes.find(n => n.id === id) ? 'note' : 'image') as 'note' | 'image',
@@ -328,11 +328,9 @@ function ArchiveToolbar({ hasSelection, onNewNote, onGroup, onSendToNotary, onUp
         + Image
         <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
       </label>
+      <button className="btn-secondary text-xs" onClick={onGroup}>+ Group</button>
       {hasSelection && (
-        <>
-          <button className="btn-secondary text-xs" onClick={onGroup}>Group</button>
-          <button className="btn-primary text-xs" onClick={onSendToNotary}>→ Notary</button>
-        </>
+        <button className="btn-primary text-xs" onClick={onSendToNotary}>→ Notary</button>
       )}
     </div>
   )

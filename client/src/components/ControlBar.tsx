@@ -7,6 +7,7 @@ const PLACES = [
   { path: '/archive', label: 'Archive' },
   { path: '/notary', label: 'Notary' },
   { path: '/workshop', label: 'Workshop' },
+  { path: '/inbox', label: 'Inbox' },
 ]
 
 export default function ControlBar() {

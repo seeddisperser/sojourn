@@ -9,6 +9,7 @@ import MissionControl from './pages/MissionControl'
 import ArchivePage from './pages/ArchivePage'
 import NotaryPage from './pages/NotaryPage'
 import WorkshopPage from './pages/WorkshopPage'
+import InboxPage from './pages/InboxPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { userName, setUser } = useStore()
@@ -37,6 +38,7 @@ function AuthenticatedApp() {
         <Route path="/notary/:specId" element={<NotaryPage />} />
         <Route path="/workshop" element={<WorkshopPage />} />
         <Route path="/workshop/:buildId" element={<WorkshopPage />} />
+        <Route path="/inbox" element={<InboxPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

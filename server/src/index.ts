@@ -16,6 +16,7 @@ import { commentsRouter } from './routes/comments.js'
 import { eventsRouter } from './routes/events.js'
 import { buildsRouter } from './routes/builds.js'
 import { artifactsRouter } from './routes/artifacts.js'
+import { webhooksRouter } from './routes/webhooks.js'
 import { requireAuth } from './middleware/requireAuth.js'
 import { startWatchers } from './watchers/index.js'
 import { recoverOrphanedBuilds } from './builds/orchestrator.js'
@@ -57,6 +58,7 @@ async function main() {
   app.use('/api', requireAuth, eventsRouter)
   app.use('/api', requireAuth, buildsRouter)
   app.use('/api', requireAuth, artifactsRouter)
+  app.use('/api', requireAuth, webhooksRouter)
 
   // Serve client build (production)
   const clientDist = resolve(__dirname, '../../client/dist')

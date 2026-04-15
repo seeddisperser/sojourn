@@ -13,7 +13,7 @@ interface Summary {
 
 export default function MissionControl() {
   const navigate = useNavigate()
-  const { unreadCount, setInboxFilter } = useStore()
+  const { unreadCount } = useStore()
   const [summary, setSummary] = useState<Summary>({
     activeBuilds: 0, openHingePoints: 0, pendingComments: 0, recentBuildStatus: null, totalCost: 0,
   })
@@ -54,7 +54,7 @@ export default function MissionControl() {
           </svg>
 
           {/* Place zones */}
-          <div className="relative grid grid-cols-3 gap-6 h-64">
+          <div className="relative grid grid-cols-4 gap-6 h-64">
             {/* Archive */}
             <PlaceZone
               name="Archive"
@@ -82,6 +82,16 @@ export default function MissionControl() {
               badge={summary.activeBuilds > 0 ? `${summary.activeBuilds} active` : undefined}
               onClick={() => navigate('/workshop')}
             />
+
+            {/* Inbox */}
+            <PlaceZone
+              name="Inbox"
+              description="Messages & activity"
+              emoji="📬"
+              color="sky"
+              badge={unreadCount > 0 ? `${unreadCount} unread` : undefined}
+              onClick={() => navigate('/inbox')}
+            />
           </div>
         </div>
 
@@ -96,7 +106,7 @@ export default function MissionControl() {
           <SummaryCard
             label="Unread"
             value={unreadCount}
-            onClick={() => { setInboxFilter('all') }}
+            onClick={() => navigate('/inbox')}
           />
           <SummaryCard
             label="Recent build"
@@ -122,6 +132,7 @@ function PlaceZone({ name, description, emoji, color, badge, onClick }: {
     moss: 'border-moss-300 hover:border-moss-400 bg-moss-50 hover:bg-moss-100',
     soil: 'border-soil-300 hover:border-soil-400 bg-soil-50 hover:bg-soil-100',
     amber: 'border-amber-300 hover:border-amber-400 bg-amber-50 hover:bg-amber-100',
+    sky: 'border-sky-300 hover:border-sky-400 bg-sky-50 hover:bg-sky-100',
   }
   return (
     <button

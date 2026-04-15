@@ -12,6 +12,7 @@ const ConfigSchema = z.object({
   db_path: z.string().default('./sojourn.db'),
   session_duration_days: z.number().int().positive().default(30),
   max_upload_mb: z.number().int().positive().default(50),
+  agents: z.record(z.string()).optional(),
 })
 
 export type Config = z.infer<typeof ConfigSchema>

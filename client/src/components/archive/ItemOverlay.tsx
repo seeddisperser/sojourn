@@ -91,6 +91,13 @@ function NoteEditor({ note, onSaved }: { note: Note; onSaved: (updated: Note) =>
   const [saving, setSaving] = useState(false)
   const [dirty, setDirty] = useState(false)
 
+  // Re-initialise when the note changes (e.g. overlay reused for a different note)
+  useEffect(() => {
+    setTitle(note.title)
+    setContent(note.content ?? '')
+    setDirty(false)
+  }, [note.id])
+
   async function handleSave() {
     if (!dirty) return
     setSaving(true)
@@ -253,14 +260,32 @@ function CommentsSection({ artifactId, artifactType }: { artifactId: string; art
   )
 }
 
+function renderMentions(body: string): React.ReactNode {
+  const parts = body.split(/(@\w+)/g)
+  return parts.map((part, i) =>
+    part.startsWith('@')
+      ? <span key={i} className="text-sky-600 font-medium">{part}</span>
+      : part
+  )
+}
+
+function isAgentAuthor(author: string): boolean {
+  // Heuristic: known human names won't match; any handle that looks like a bot handle
+  // Agents reply with their handle as author (e.g. "botson"), not "Calvin" or "system"
+  return author !== 'system' && !/^[A-Z]/.test(author) && author.length > 0
+}
+
 function CommentBubble({ comment, onReply }: { comment: Comment; onReply: () => void }) {
+  const agent = isAgentAuthor(comment.author)
   return (
-    <div className="bg-soil-50 rounded-lg p-2 mb-1">
+    <div className={`rounded-lg p-2 mb-1 ${agent ? 'bg-sky-50 border border-sky-100' : 'bg-soil-50'}`}>
       <div className="flex items-center gap-1.5 mb-0.5">
-        <span className="text-xs font-semibold text-soil-700">{comment.author}</span>
+        <span className={`text-xs font-semibold ${agent ? 'text-sky-700' : 'text-soil-700'}`}>
+          {agent ? `@${comment.author}` : comment.author}
+        </span>
         <span className="text-xs text-soil-300">{new Date(comment.created_at).toLocaleDateString()}</span>
       </div>
-      <p className="text-xs text-soil-700 leading-relaxed">{comment.body}</p>
+      <p className="text-xs text-soil-700 leading-relaxed">{renderMentions(comment.body)}</p>
       <button onClick={onReply} className="text-xs text-soil-400 hover:text-soil-600 mt-0.5">Reply</button>
     </div>
   )
